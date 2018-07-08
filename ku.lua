@@ -5,7 +5,7 @@
 1.00 - Inital with selfja/selfma/targma/targja]]
 
 _addon.name = 'ku'
-_addon.version = '1.12'
+_addon.version = '1.13'
 _addon.author = 'Jintawk/Jinvoco (Carbuncle)'
 _addon.command = 'ku'
 
@@ -50,6 +50,13 @@ windower.register_event('addon command', function()
 			if not action.valid then
 				log_invalid_params()
 				return
+			end
+
+			for i = 1, ability_list.count do
+				if action.name == ability_list.items[i].name then
+					log('Action already added')
+					return
+				end
 			end
 
 			if action.type == TYPE.SELF_MAGIC then
@@ -118,9 +125,8 @@ windower.register_event('addon command', function()
 			update_gui(ability_list)
 		elseif command == COMMANDS.REMOVE then
 			local id = tonumber(params[1])
-
-			--[[ TODO CHECK IF WITHIN RANGE
-			if id < ability_list:first or id > ability_list:last then
+			
+			--[[if id < ability_list:first or id > ability_list:last then
 				log("Can't remove " .. id .. " as it's not within the list")
 				return
 			end]]
@@ -186,17 +192,19 @@ windower.register_event('time change', function(new, old)
 	for i = 1, ability_list.count do
 		local action = ability_list.items[i]
 
-		-- If combat status is appropriate for using this ability
-		if should_recast(action, engaged) then
-			-- If it has no buff or it does but the buff has worn off
-			if action.buff_id == nil or is_buff_on(action) == false then
-				-- If recast timer is zero
-				if can_recast(action) then
-					-- If have anough MP for this spell, or it's a JA
-					if enough_mp(action) then
-						-- Do action
-						windower.send_command(action.cmd)
-						return
+		if action ~= nil then
+			-- If combat status is appropriate for using this ability
+			if should_recast(action, engaged) then
+				-- If it has no buff or it does but the buff has worn off
+				if action.buff_id == nil or is_buff_on(action) == false then
+					-- If recast timer is zero
+					if can_recast(action) then
+						-- If have anough MP for this spell, or it's a JA
+						if enough_mp(action) then
+							-- Do action
+							windower.send_command(action.cmd)
+							return
+						end
 					end
 				end
 			end
