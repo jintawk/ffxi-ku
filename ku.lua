@@ -5,7 +5,7 @@
 1.00 - Inital with selfja/selfma/targma/targja]]
 
 _addon.name = 'ku'
-_addon.version = '1.13'
+_addon.version = '1.14'
 _addon.author = 'Jintawk/Jinvoco (Carbuncle)'
 _addon.command = 'ku'
 
@@ -19,7 +19,7 @@ require "util"
 
 ability_list = List.new()
 pause = false
-engaged = windower.ffxi.get_player().status == 1
+engaged = false
 debug = false
 
 --[[
