@@ -5,7 +5,7 @@
 1.00 - Inital with selfja/selfma/targma/targja]]
 
 _addon.name = 'ku'
-_addon.version = '1.14'
+_addon.version = '1.15'
 _addon.author = 'Jintawk/Jinvoco (Carbuncle)'
 _addon.command = 'ku'
 
@@ -168,6 +168,10 @@ end)
 windower.register_event('time change', function(new, old)
 	if pause then
 		log_d('KU is paused')
+		return
+	end
+
+	if windower == nil or windower.ffxi == nil or windower.ffxi.get_player() == nil then
 		return
 	end
 
