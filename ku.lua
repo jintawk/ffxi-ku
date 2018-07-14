@@ -5,7 +5,7 @@
 1.00 - Inital with selfja/selfma/targma/targja]]
 
 _addon.name = 'ku'
-_addon.version = '1.15'
+_addon.version = '1.16'
 _addon.author = 'Jintawk/Jinvoco (Carbuncle)'
 _addon.command = 'ku'
 
@@ -19,21 +19,8 @@ require "util"
 
 ability_list = List.new()
 pause = false
-engaged = false
 debug = false
-
---[[
-	Event: Addon loaded
-]]
-windower.register_event('load', function()
-	log('Addon loaded')
-
-	if engaged then
-		log_d('Status: Engaged')
-	else
-		log_d('Status: Not engaged')
-	end
-end)
+engaged = false
 
 --[[
 	Event: Addon command received from player
@@ -181,7 +168,7 @@ windower.register_event('time change', function(new, old)
 
 	local mobHP = 0
 
-	if engaged then
+	if engaged and windower.ffxi.get_mob_by_target('t') ~= nil then
 		mobHP = windower.ffxi.get_mob_by_target('t').hpp
 		log_d('Mob hpp = ' .. mobHP)
 	end
