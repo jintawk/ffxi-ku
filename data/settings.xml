@@ -2,14 +2,14 @@
 <settings>
     <global>
         <bg>
-            <alpha>255</alpha>
+            <alpha>128</alpha>
             <blue>0</blue>
             <green>0</green>
             <red>0</red>
             <visible>true</visible>
         </bg>
         <flags>
-            <bold>false</bold>
+            <bold>true</bold>
             <bottom>false</bottom>
             <draggable>true</draggable>
             <italic>false</italic>
@@ -17,8 +17,8 @@
         </flags>
         <padding>0</padding>
         <pos>
-            <x>0</x>
-            <y>475</y>
+            <x>1670</x>
+            <y>907</y>
         </pos>
         <text>
             <alpha>255</alpha>
@@ -41,13 +41,19 @@
     </global>
     <jintawk>
         <pos>
-            <x>11</x>
-            <y>289</y>
+            <x>1772</x>
+            <y>683</y>
         </pos>
         <text>
-            <stroke>
-                <alpha>-7.5297816100864e+028</alpha>
-            </stroke>
+            <fonts>
+
+            </fonts>
         </text>
     </jintawk>
+    <jynvoco>
+        <pos>
+            <x>1675</x>
+            <y>880</y>
+        </pos>
+    </jynvoco>
 </settings>
