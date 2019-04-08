@@ -1,2 +1,11 @@
--- RDM Job Abilities
+-- DNC
+//ku add selfja Chocobo_Jig_II 381 176 218 out
+
+-- RDM
+//ku add selfma Enthunder 104 98 in
+//ku add selfma Enthunder_II 316 281 in
+//ku add selfma Haste 57 33 in
+//ku add selfma Refresh 109 43 in
+//ku add selfja Composure 247 419 50 all
 //ku add selfja Saboteur 274 454 36 in
+
