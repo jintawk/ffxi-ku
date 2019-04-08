@@ -1,3 +1,9 @@
+KU - "Keeper Upper"
+FFXI Addon that automatically casts spells/uses abilities
+Watches for player buffs and intelligently recasts when abilty effects wear off
+
+Features/Examples:
+
 -Magic cast on self
 Params -> //ku add selfma [spell] [spell_id] [buff_id] [when]
 Example -> //ku add selfma Cocoon 547 93 in
