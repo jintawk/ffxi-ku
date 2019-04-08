@@ -1,3 +1,5 @@
+#ffxi-ku
+
 KU - "Keeper Upper"
 FFXI Addon that automatically casts spells/uses abilities
 Watches for player buffs and intelligently recasts when abilty effects wear off
