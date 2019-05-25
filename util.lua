@@ -145,8 +145,8 @@ function get_help_string()
 	Example -> //ku add targja Box_Step 202 220
 
 	-Curing magic used on self
-	Params -> //ku add curema [spell] [when] [hp%]
-	Example -> //ku add curema Cure_IV all 75
+	Params -> //ku add curema [spell] [spell_id] [when] [hp%]
+	Example -> //ku add curema Cure_IV 4 all 75
 
 	-Remove from action list
 	Params -> //ku remove [id]

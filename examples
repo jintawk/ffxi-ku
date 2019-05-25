@@ -20,6 +20,4 @@
 //ku add selfja Saboteur 274 454 36 in
 //ku add targma Stone 159
 //ku add targma Bio 230
-
-- Curema = //ku add curema [name] [when] [hpp]
-//ku add curema Cure_IV all 75
+//ku add curema Cure_IV 4 all 75
