@@ -44,16 +44,11 @@
             <x>1772</x>
             <y>683</y>
         </pos>
-        <text>
-            <fonts>
-
-            </fonts>
-        </text>
     </jintawk>
     <jynvoco>
         <pos>
             <x>1675</x>
-            <y>880</y>
+            <y>771</y>
         </pos>
     </jynvoco>
 </settings>

@@ -21,9 +21,13 @@ settings = config.load(defaults)
 listGUI = texts.new(settings)
 settings = config.load()
 
-function update_gui(list)
+function update_gui(list, zone)
 	if list.count > 0 then
 		local guiStr = "KU List:"
+
+		if zone ~= nil then
+			guiStr = guiStr .. " [" .. zone .. "]"
+		end
 
 		for i = list.first, list.first + list.count - 1 do
 			local item = list.items[i]

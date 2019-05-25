@@ -96,12 +96,12 @@ function Ability:init_cure_dance(params)
 end
 
 function Ability:init_cure_magic(params)
-	if params[4] == nil or params[5] == nil then
+	if params[3] == nil or params[4] == nil then
 		return false
 	end
 
-	self.when = string.lower(params[4])
-	self.hpPerc = tonumber(params[5])
+	self.when = string.lower(params[3])
+	self.hpPerc = tonumber(params[4])
 	self.cmd = 'input /ma "' .. self.name .. '" <me>'
 
 	if self.when ~= 'all' and self.when ~= 'in' and self.when ~= 'out' then

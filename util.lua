@@ -144,9 +144,17 @@ function get_help_string()
 	Params -> //ku add selfja [ja] [ability_id] [recast_id]
 	Example -> //ku add targja Box_Step 202 220
 
+	-Curing magic used on self
+	Params -> //ku add curema [spell] [when] [hp%]
+	Example -> //ku add curema Cure_IV all 75
+
 	-Remove from action list
 	Params -> //ku remove [id]
-	Eample -> //ku remove 3
+	Example -> //ku remove 3	
+
+	-Restrict KU to a single zone
+	Params -> //ku zone [id]
+	Example (Yorcia) -> //ku zone 263
 
 	Notes:
 	Valid [when] options are 'all' 'out' and 'in' combat

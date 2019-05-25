@@ -5,7 +5,21 @@
 //ku add selfma Enthunder 104 98 in
 //ku add selfma Enthunder_II 316 281 in
 //ku add selfma Haste 57 33 in
+//ku add selfma Haste_II 511 33 in
+//ku add selfma Phalanx 106 116 in
 //ku add selfma Refresh 109 43 in
+//ku add selfma Refresh_II 473 43 in
+//ku add selfma Regen 108 42 in
+//ku add selfma Regen_II 110 42 in
+//ku add selfma Temper 493 432 in
+//ku add selfma Ice_Spikes 250 35 in
+//ku add selfma Gain-DEX 487 81 in
+//ku add selfma Gain-MND 491 85 in
+//ku add selfma Stoneskin 54 37 out
 //ku add selfja Composure 247 419 50 all
 //ku add selfja Saboteur 274 454 36 in
+//ku add targma Stone 159
+//ku add targma Bio 230
 
+- Curema = //ku add curema [name] [when] [hpp]
+//ku add curema Cure_IV all 75

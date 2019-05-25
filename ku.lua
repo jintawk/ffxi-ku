@@ -5,10 +5,11 @@
 1.00 - Inital with selfja/selfma/targma/targja]]
 
 _addon.name = 'ku'
-_addon.version = '1.16'
+_addon.version = '1.2'
 _addon.author = 'Jintawk/Jinvoco (Carbuncle)'
 _addon.command = 'ku'
 
+res = require('resources')
 require('sets')
 require('tables')
 require "Ability"
@@ -21,6 +22,8 @@ ability_list = List.new()
 pause = false
 debug = false
 engaged = false
+zone_restriction_id = nil
+zone_restriction_name = nil
 
 --[[
 	Event: Addon command received from player
@@ -102,14 +105,14 @@ windower.register_event('addon command', function()
 				end
 
 				log('Adding [' .. action.name .. ']')
-				log_d('id[' .. action.id .. '] when[' .. action.when .. '] hpPerc[' .. action.hpPerc .. '] cmd[' .. action.cmd ..']')
+				log_d('name[' .. action.name .. '] when[' .. action.when .. '] hpPerc[' .. action.hpPerc .. '] cmd[' .. action.cmd ..']')
 
 				ability_list:push_back(action)
 			else
 	    		log_invalid_params()
 			end
 
-			update_gui(ability_list)
+			update_gui(ability_list, zone_restriction_name)
 		elseif command == COMMANDS.REMOVE then
 			local id = tonumber(params[1])
 			
@@ -120,13 +123,30 @@ windower.register_event('addon command', function()
 
 			log('Removing [' .. action.name .. ']')
 			ability_list:remove_at(id)
-			update_gui(ability_list)
+			update_gui(ability_list, zone_restriction_name)
     	elseif command == COMMANDS.STOP then
     		log('Paused')
     		pause = true
 		elseif command == COMMANDS.START then
     		log('Resuming')
-    		pause = false
+			pause = false
+		elseif command == COMMANDS.ZONE then
+			local new_zone = tonumber(params[1])
+
+			for k,v in pairs(res.zones) do
+				if k == new_zone then
+					zone_restriction_id = k
+					zone_restriction_name = v.en
+				end
+			end
+
+			if zone_restriction_id ~= nil and zone_restriction_id > 0 then
+				log('Zone set to [' .. zone_restriction_name .. ']')
+			else
+				log('Zone cleared')
+			end
+
+			update_gui(ability_list, zone_restriction_name)
 		elseif command == COMMANDS.HELP then
 			log(get_help_string())
 		else
@@ -158,8 +178,12 @@ windower.register_event('time change', function(new, old)
 		return
 	end
 
-	if windower == nil or windower.ffxi == nil or windower.ffxi.get_player() == nil then
+	if windower == nil or windower.ffxi == nil or windower.ffxi.get_player() == nil or windower.ffxi.get_info().logged_in == false then
 		return
+	end
+
+	if zone_restriction_id ~= nil and zone_restriction_id > 0 then
+		if windower.ffxi.get_info().zone ~= zone_restriction_id then return end
 	end
 
 	if windower.ffxi.get_player().autorun then
