@@ -21,3 +21,19 @@
 //ku add targma Stone 159
 //ku add targma Bio 230
 //ku add curema Cure_IV 4 all 75
+
+-- BLU
+//kua add selfma Cocoon 547 93 in
+
+-- MNK
+//ku add targja Provoke 35 5
+//ku add selfja Dodge 37 60 14 in
+//ku add selfja Focus 36 59 13 in
+
+--zones--
+
+-- yorcia
+//ku zone 263
+
+-- Inner court
+//ku zone 276
