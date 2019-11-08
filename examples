@@ -1,5 +1,8 @@
 -- DNC
 //ku add selfja Chocobo_Jig_II 381 176 218 out
+//ku add selfja Haste_Samba 189 370 216 in
+//ku add selfja Drain_Samba_II 185 368 216 in
+//ku add selfja Aspir_Samba 187 369 216 in
 
 -- RDM
 //ku add selfma Enthunder 104 98 in
@@ -23,12 +26,24 @@
 //ku add curema Cure_IV 4 all 75
 
 -- BLU
-//kua add selfma Cocoon 547 93 in
+//ku add selfma Cocoon 547 93 in
 
 -- MNK
 //ku add targja Provoke 35 5
 //ku add selfja Dodge 37 60 14 in
 //ku add selfja Focus 36 59 13 in
+//ku add selfja Footwork 227 406 21 in
+//ku add selfja Impetus 269 461 31 in
+//ku add selfja Counterstance 40 61 17 in
+
+-- THF
+//ku add selfja Conspirator 276 462 40 in
+//ku add selfja Feint 156 343 68 in
+
+-- WAR
+//ku add selfja Berserk 31 56 1 in
+//ku add selfja Warcry 32 68 2 in
+//ku add selfja Aggressor 34 58 4 in
 
 --zones--
 
@@ -37,3 +52,6 @@
 
 -- Inner court
 //ku zone 276
+
+-- Woh Gates
+//ku zone 273
