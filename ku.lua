@@ -1,12 +1,13 @@
 --[[VERSION HISTORY
-1.2 - Added support for sets
+1.3 - Added support for sets
+1.2 - Added zone exclusions & fixed curema
 1.12 - Added cureda and curema
 1.11 - Added selfda and targda
 1.10 - Overhaul/refactor
 1.00 - Inital with selfja/selfma/targma/targja]]
 
 _addon.name = 'ku'
-_addon.version = '1.2'
+_addon.version = '1.3'
 _addon.author = 'Jintawk/Jinvoco (Carbuncle)'
 _addon.command = 'ku'
 
