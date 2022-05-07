@@ -108,12 +108,12 @@ end
 --[[
     Clear a List of all items
 ]]
-function List:clear(List)
-    for idx = list.first, list.first + list.count - 1 do
-        list.items[idx] = nil
+function List:clear()
+    for idx = self.first, self.first + self.count - 1 do
+        self.items[idx] = nil
     end
 
-    list.first = 1
-    list.last = 1
-    list.count = 0
+    self.first = 1
+    self.last = 1
+    self.count = 0
 end

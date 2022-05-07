@@ -1,4 +1,5 @@
 --[[VERSION HISTORY
+1.2 - Added support for sets
 1.12 - Added cureda and curema
 1.11 - Added selfda and targda
 1.10 - Overhaul/refactor
@@ -124,6 +125,97 @@ windower.register_event('addon command', function()
 			log('Removing [' .. action.name .. ']')
 			ability_list:remove_at(id)
 			update_gui(ability_list, zone_restriction_name)
+		elseif command == COMMANDS.SET then	
+			local setName = params[1]
+
+			if settings.sets[setName] ~= nil then
+				windower.add_to_chat(207, 'Found set! Clearing KU & Applying set: ' .. setName)
+
+				ability_list:clear()
+
+				local set = settings.sets[setName]
+
+				for key,val in pairs(split(set, ",")) do
+					local params = split(val, " ")
+					local action = Ability.new(params)
+
+					if not action.valid then
+						windower.add_to_chat(207, 'An ability in the set is not valid, please review it')
+						return
+					end
+
+					-- TODO! I've pasted this from the add section above, put this in a function to keep it DRY
+
+					if action.type == TYPE.SELF_MAGIC then
+						if not action:init_self_magic(params) then
+							windower.add_to_chat(207, 'Failed init_self_magic')
+							return
+						end
+		
+						log('Adding [' .. action.name .. ']')
+						log_d('id[' .. action.id .. '] buff_id[' .. action.buff_id .. '] when[' .. action.when	.. '] cmd[' .. action.cmd ..']')
+		
+						ability_list:push_back(action)
+					elseif action.type == TYPE.SELF_JA or action.type == TYPE.SELF_DANCE then
+						if not action:init_self_ja(params) then
+							windower.add_to_chat(207, 'Failed init_self_ja')
+							return
+						end
+		
+						log('Adding [' .. action.name .. ']')
+						log_d('id[' .. action.id .. '] buff_id[' .. action.buff_id .. '] recast_id[' .. action.recast_id .. '] when[' .. action.when .. '] cmd[' .. action.cmd ..']')
+		
+						ability_list:push_back(action)
+					elseif action.type == TYPE.TARGET_MAGIC then
+						-- TODO ! add invalid aparams protection
+						action:init_target_magic()
+		
+						log('Adding [' .. action.name .. ']')
+						log_d('id[' .. action.id .. '] cmd[' .. action.cmd ..']')
+		
+						ability_list:push_back(action)
+					elseif action.type == TYPE.TARGET_JA or action.type == TYPE.TARGET_DANCE then
+						if not action:init_target_ja(params) then
+							windower.add_to_chat(207, 'Failed init_target_ja')
+							return
+						end
+		
+						log('Adding [' .. action.name .. ']')
+						log_d('id[' .. action.id .. '] recast_id[' .. action.recast_id .. '] cmd[' .. action.cmd ..']')
+		
+						ability_list:push_back(action)
+					elseif action.type == TYPE.CURE_DANCE then
+						if not action:init_cure_dance(params) then
+							windower.add_to_chat(207, 'Failed init_cure_dance')
+							return
+						end
+		
+		
+						log('Adding [' .. action.name .. ']')
+						log_d('id[' .. action.id .. '] recast_id[' .. action.recast_id .. '] when[' .. action.when .. '] hpPerc[' .. action.hpPerc .. '] cmd[' .. action.cmd ..']')
+		
+						ability_list:push_back(action)
+					elseif action.type == TYPE.CURE_MAGIC then
+						if not action:init_cure_magic(params) then
+							windower.add_to_chat(207, 'Failed init_cure_magic')
+							return
+						end
+		
+						log('Adding [' .. action.name .. ']')
+						log_d('name[' .. action.name .. '] when[' .. action.when .. '] hpPerc[' .. action.hpPerc .. '] cmd[' .. action.cmd ..']')
+		
+						ability_list:push_back(action)
+					else
+						windower.add_to_chat(207, 'Invalid action in set, please review')
+					end
+
+				end
+			--				settingsBuffsToUse = settings.buffs[jobKey]
+
+				update_gui(ability_list, zone_restriction_name)
+			else
+				windower.add_to_chat(207, 'No such set -> ' .. setName)
+			end
     	elseif command == COMMANDS.STOP then
     		log('Paused')
     		pause = true

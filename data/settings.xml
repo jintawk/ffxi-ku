@@ -20,6 +20,9 @@
             <x>1670</x>
             <y>907</y>
         </pos>
+        <sets>
+            <pldwar>selfja Sentinel 48 62 75 in,targja Provoke 35 5,targma Flash 112,selfja Majesty 394 621 150 in,selfma Protect_V 47 40 in,selfma Shell_IV 51 41 in,curema Cure_IV 4 all 75,selfma Reprisal 97 403 in,selfja Palisade 278 478 42 in,selfma Phalanx 106 116 in,selfma Crusade 476 289 in,selfma Enlight 310 274 in,selfja Divine_Emblem 255 438 80 in,selfja Rampart 92 623 77 in,selfja Warcry 32 68 2 in,selfja Aggressor 34 58 4 in,selfja Fealty 157 344 78 in,selfja Sepulcher 277 463 41 in,selfja Holy_Circle 47 74 74 in</pldwar>            
+        </sets>
         <text>
             <alpha>255</alpha>
             <blue>255</blue>
@@ -39,16 +42,4 @@
             </stroke>
         </text>
     </global>
-    <jintawk>
-        <pos>
-            <x>1769</x>
-            <y>413</y>
-        </pos>
-    </jintawk>
-    <jynvoco>
-        <pos>
-            <x>1675</x>
-            <y>771</y>
-        </pos>
-    </jynvoco>
 </settings>

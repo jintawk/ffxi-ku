@@ -1,8 +1,10 @@
 -- DNC
 //ku add selfja Chocobo_Jig_II 381 176 218 out
 //ku add selfja Haste_Samba 189 370 216 in
+//ku add selfja Drain_Samba 184 368 216 in
 //ku add selfja Drain_Samba_II 185 368 216 in
 //ku add selfja Aspir_Samba 187 369 216 in
+//ku add cureda Curing_Waltz_III 192 187 all 50
 
 -- RDM
 //ku add selfma Enthunder 104 98 in
@@ -15,18 +17,62 @@
 //ku add selfma Regen 108 42 in
 //ku add selfma Regen_II 110 42 in
 //ku add selfma Temper 493 432 in
+//ku add selfma Temper_II 895 432 in
 //ku add selfma Ice_Spikes 250 35 in
-//ku add selfma Gain-DEX 487 81 in
-//ku add selfma Gain-MND 491 85 in
+//ku add selfma Gain-STR 486 119 in
+//ku add selfma Gain-INT 490 123 in
+//ku add selfma Gain-DEX 487 120 in
+//ku add selfma Gain-MND 491 124 in
+//ku add selfma Aquaveil 55 39 in
 //ku add selfma Stoneskin 54 37 out
 //ku add selfja Composure 247 419 50 all
 //ku add selfja Saboteur 274 454 36 in
+//ku add selfma Barparalyze 74 108 in
 //ku add targma Stone 159
 //ku add targma Bio 230
 //ku add curema Cure_IV 4 all 75
+//ku add selfma Blink 53 36 all
+
+-- PLD
+//ku add curema Cure 1 all 75
+//ku add curema Cure_II 2 all 75
+//ku add selfma Protect 43 40 in
+
+//ku add selfja Sentinel 48 62 75 in
+//ku add targja Provoke 35 5
+//ku add targma Flash 112
+
+//ku add selfja Majesty 394 621 150 in
+//ku add selfma Protect_V 47 40 in
+//ku add selfma Shell_IV 51 41 in
+//ku add selfma Shell_V 52 41 in
+//ku add curema Cure_III 3 all 85
+//ku add curema Cure_IV 4 all 75
+
+//ku add selfma Reprisal 97 403 in
+//ku add selfja Palisade 278 478 42 in
+//ku add selfma Phalanx 106 116 in
+//ku add selfma Crusade 476 289 in
+//ku add selfma Enlight 310 274 in
+//ku add selfja Divine_Emblem 255 438 80 in
+//ku add selfja Rampart 92 623 77 in
+//ku add selfja Warcry 32 68 2 in
+//ku add selfja Aggressor 34 58 4 in
+//ku add selfja Fealty 157 344 78 in
+//ku add selfja Sepulcher 277 463 41 in
+//ku add selfja Holy_Circle 47 74 74 in
+
+-- SCH
+//ku add selfja Light_Arts 211 401 228 all
+//ku add selfja Addendum:_White 234 401 231 all
+//ku add selfma Reraise 135 113 all
+//ku add selfma Klimaform 287 407 all
 
 -- BLU
 //ku add selfma Cocoon 547 93 in
+//ku add curema Magic_Fruit 593 all 75
+//ku add selfma Erratic_Flutter 710 33 in
+//ku add selfma Battery_Charge 662 43 in
 
 -- MNK
 //ku add targja Provoke 35 5
@@ -39,11 +85,20 @@
 -- THF
 //ku add selfja Conspirator 276 462 40 in
 //ku add selfja Feint 156 343 68 in
+//ku add targja Mug 45 65 in
+//ku add targja Despoil 228 61 in
+//ku add targja Bully 321 240 in
+//ku add selfja Flee 42 32 62 out
 
 -- WAR
 //ku add selfja Berserk 31 56 1 in
 //ku add selfja Warcry 32 68 2 in
 //ku add selfja Aggressor 34 58 4 in
+//ku add targja Provoke 35 5
+
+
+// NIN
+//ku add selfja Innin 249 421 147 in
 
 --zones--
 
