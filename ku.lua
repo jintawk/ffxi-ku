@@ -211,8 +211,7 @@ windower.register_event('addon command', function()
 					end
 
 				end
-			--				settingsBuffsToUse = settings.buffs[jobKey]
-
+				
 				update_gui(ability_list, zone_restriction_name)
 			else
 				windower.add_to_chat(207, 'No such set -> ' .. setName)
@@ -272,50 +271,36 @@ windower.register_event('time change', function(new, old)
 	end
 
 	if windower == nil or windower.ffxi == nil or windower.ffxi.get_player() == nil or windower.ffxi.get_info().logged_in == false then
+		-- Not logged in ffxi
 		return
 	end
 
-	if zone_restriction_id ~= nil and zone_restriction_id > 0 then
-		if windower.ffxi.get_info().zone ~= zone_restriction_id then return end
+	if zone_restriction_id ~= nil and zone_restriction_id > 0 and windower.ffxi.get_info().zone ~= zone_restriction_id then
+		-- Zone restriction is active and we're not in the specified zone
+		return
 	end
 
 	if windower.ffxi.get_player().autorun then
+		-- Don't do KU stuff when auto running as it's annoying
 		log_d('Auto-running, not performing actions')
 	end
 
-	local mobHP = 0
+	local mob = windower.ffxi.get_mob_by_target('t')
 
-	if engaged and windower.ffxi.get_mob_by_target('t') ~= nil then
-		mobHP = windower.ffxi.get_mob_by_target('t').hpp
-		log_d('Mob hpp = ' .. mobHP)
-	end
-
-	if mobHP == 100 then
+	if mob.hpp == 100 then
 		log_d('Mob hpp is 100, not starting yet')
 		return
 	end
 
-	-- KU is unpaused and we are either not engaged or engaged mob has < 100% hp
+	-- Checks passed
 	-- Look through every action in list to see if any are eligible for casting now
 	for i = 1, ability_list.count do
 		local action = ability_list.items[i]
 
-		if action ~= nil then
-			-- If combat status is appropriate for using this ability
-			if should_recast(action, engaged) then
-				-- If it has no buff or it does but the buff has worn off
-				if action.buff_id == nil or is_buff_on(action) == false then
-					-- If recast timer is zero
-					if can_recast(action) then
-						-- If have anough MP for this spell, or it's a JA
-						if enough_mp(action) then
-							-- Do action
-							windower.send_command(action.cmd)
-							return
-						end
-					end
-				end
-			end
+		if action ~= nil and should_recast(action, engaged) and (action.buff_id == nil or is_buff_on(action) == false) and can_recast(action) and enough_mp(action) then
+			-- Do action
+			windower.send_command(action.cmd)
+			return
 		end
 	end
 end)
