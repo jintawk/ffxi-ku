@@ -287,7 +287,7 @@ windower.register_event('time change', function(new, old)
 
 	local mob = windower.ffxi.get_mob_by_target('t')
 
-	if mob.hpp == 100 then
+	if engaged and mob ~= nil and mob.hpp == 100 then
 		log_d('Mob hpp is 100, not starting yet')
 		return
 	end
