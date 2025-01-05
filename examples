@@ -7,7 +7,29 @@
 //ku add cureda Curing_Waltz_III 192 187 all 50
 
 -- RDM
+//ku add selfma Enfire 100 94 in
+//ku add selfma Enblizzard 101 95 in
+//ku add selfma Enaero 102 96 in
+//ku add selfma Enstone 103 97 in
 //ku add selfma Enthunder 104 98 in
+//ku add selfma Enwater 105 99 in
+
+//ku add selfma Barfire 60 100 in
+//ku add selfma Barblizzard 61 101 in
+//ku add selfma Baraero 62 102 in
+//ku add selfma Barstone 63 103 in
+//ku add selfma Barthunder 64 104 in
+//ku add selfma Barwater 65 105 in
+
+//ku add selfma Barsleep 72 106 in
+//ku add selfma Barpoison 73 107 in
+//ku add selfma Barparalyze 74 108 in
+//ku add selfma Barblind 75 109 in
+//ku add selfma Barsilence 76 110 in
+//ku add selfma Barpetrify 77 111 in
+//ku add selfma Barvirus 78 112 in
+//ku add selfma Baramnesia 84 286 in
+
 //ku add selfma Enthunder_II 316 281 in
 //ku add selfma Haste 57 33 in
 //ku add selfma Haste_II 511 33 in
@@ -27,7 +49,6 @@
 //ku add selfma Stoneskin 54 37 out
 //ku add selfja Composure 247 419 50 all
 //ku add selfja Saboteur 274 454 36 in
-//ku add selfma Barparalyze 74 108 in
 //ku add targma Stone 159
 //ku add targma Bio 230
 //ku add curema Cure_IV 4 all 75
@@ -67,6 +88,14 @@
 //ku add selfja Addendum:_White 234 401 231 all
 //ku add selfma Reraise 135 113 all
 //ku add selfma Klimaform 287 407 all
+//ku add selfma Sandstorm 99 181 in
+//ku add selfma Rainstorm 113 183 in
+//ku add selfma Windstorm 114 180 in
+//ku add selfma Firestorm 115 178 in
+//ku add selfma Hailstorm 116 179 in
+//ku add selfma Thunderstorm 117 182 in
+//ku add selfma Voidstorm 118 185 in
+//ku add selfma Aurorastorm 119 184 in
 
 -- BLU
 //ku add selfma Cocoon 547 93 in

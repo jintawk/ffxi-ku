@@ -114,7 +114,7 @@ windower.register_event('addon command', function()
 	    		log_invalid_params()
 			end
 
-			update_gui(ability_list, zone_restriction_name)
+			update_gui(ability_list, zone_restriction_name, pause)
 		elseif command == COMMANDS.REMOVE then
 			local id = tonumber(params[1])
 			
@@ -123,9 +123,9 @@ windower.register_event('addon command', function()
 				return
 			end]]
 
-			log('Removing [' .. action.name .. ']')
+			log('Removing [' .. ability_list.items[id].name .. ']')
 			ability_list:remove_at(id)
-			update_gui(ability_list, zone_restriction_name)
+			update_gui(ability_list, zone_restriction_name, pause)
 		elseif command == COMMANDS.SET then	
 			local setName = params[1]
 
@@ -147,19 +147,19 @@ windower.register_event('addon command', function()
 
 					-- TODO! I've pasted this from the add section above, put this in a function to keep it DRY
 
-					if action.type == TYPE.SELF_MAGIC then
+					if action.type == TYPE.SELF_MAGIC then						
 						if not action:init_self_magic(params) then
-							windower.add_to_chat(207, 'Failed init_self_magic')
+							windower.add_to_chat(207, 'Failed init_self_magic - This is usually a typo in the set - Please review')
 							return
-						end
-		
+						end		
+						
 						log('Adding [' .. action.name .. ']')
-						log_d('id[' .. action.id .. '] buff_id[' .. action.buff_id .. '] when[' .. action.when	.. '] cmd[' .. action.cmd ..']')
+						log_d('id[' .. action.id .. '] buff_id[' .. action.buff_id .. '] when[' .. action.when	.. '] cmd[' .. action.cmd ..']')						
 		
 						ability_list:push_back(action)
 					elseif action.type == TYPE.SELF_JA or action.type == TYPE.SELF_DANCE then
 						if not action:init_self_ja(params) then
-							windower.add_to_chat(207, 'Failed init_self_ja')
+							windower.add_to_chat(207, 'Failed init_self_ja - This is usually a typo in the set - Please review')
 							return
 						end
 		
@@ -177,7 +177,7 @@ windower.register_event('addon command', function()
 						ability_list:push_back(action)
 					elseif action.type == TYPE.TARGET_JA or action.type == TYPE.TARGET_DANCE then
 						if not action:init_target_ja(params) then
-							windower.add_to_chat(207, 'Failed init_target_ja')
+							windower.add_to_chat(207, 'Failed init_target_ja - This is usually a typo in the set - Please review')
 							return
 						end
 		
@@ -187,7 +187,7 @@ windower.register_event('addon command', function()
 						ability_list:push_back(action)
 					elseif action.type == TYPE.CURE_DANCE then
 						if not action:init_cure_dance(params) then
-							windower.add_to_chat(207, 'Failed init_cure_dance')
+							windower.add_to_chat(207, 'Failed init_cure_dance - This is usually a typo in the set - Please review')
 							return
 						end
 		
@@ -198,7 +198,7 @@ windower.register_event('addon command', function()
 						ability_list:push_back(action)
 					elseif action.type == TYPE.CURE_MAGIC then
 						if not action:init_cure_magic(params) then
-							windower.add_to_chat(207, 'Failed init_cure_magic')
+							windower.add_to_chat(207, 'Failed init_cure_magic - This is usually a typo in the set - Please review')
 							return
 						end
 		
@@ -207,21 +207,23 @@ windower.register_event('addon command', function()
 		
 						ability_list:push_back(action)
 					else
-						windower.add_to_chat(207, 'Invalid action in set, please review')
+						windower.add_to_chat(207, 'Invalid action in set, please review. Action type was "' .. action.type .. '"')
 					end
 
 				end
 				
-				update_gui(ability_list, zone_restriction_name)
+				update_gui(ability_list, zone_restriction_name, pause)
 			else
 				windower.add_to_chat(207, 'No such set -> ' .. setName)
 			end
     	elseif command == COMMANDS.STOP then
     		log('Paused')
     		pause = true
+			update_gui(ability_list, zone_restriction_name, pause)
 		elseif command == COMMANDS.START then
     		log('Resuming')
 			pause = false
+			update_gui(ability_list, zone_restriction_name, pause)
 		elseif command == COMMANDS.ZONE then
 			local new_zone = tonumber(params[1])
 
@@ -238,7 +240,7 @@ windower.register_event('addon command', function()
 				log('Zone cleared')
 			end
 
-			update_gui(ability_list, zone_restriction_name)
+			update_gui(ability_list, zone_restriction_name, pause)
 		elseif command == COMMANDS.HELP then
 			log(get_help_string())
 		else
