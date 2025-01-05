@@ -114,7 +114,7 @@ windower.register_event('addon command', function()
 	    		log_invalid_params()
 			end
 
-			update_gui(ability_list, zone_restriction_name)
+			update_gui(ability_list, zone_restriction_name, pause)
 		elseif command == COMMANDS.REMOVE then
 			local id = tonumber(params[1])
 			
@@ -123,9 +123,9 @@ windower.register_event('addon command', function()
 				return
 			end]]
 
-			log('Removing [' .. action.name .. ']')
+			log('Removing [' .. ability_list.items[id].name .. ']')
 			ability_list:remove_at(id)
-			update_gui(ability_list, zone_restriction_name)
+			update_gui(ability_list, zone_restriction_name, pause)
 		elseif command == COMMANDS.SET then	
 			local setName = params[1]
 
@@ -147,19 +147,19 @@ windower.register_event('addon command', function()
 
 					-- TODO! I've pasted this from the add section above, put this in a function to keep it DRY
 
-					if action.type == TYPE.SELF_MAGIC then
+					if action.type == TYPE.SELF_MAGIC then						
 						if not action:init_self_magic(params) then
-							windower.add_to_chat(207, 'Failed init_self_magic')
+							windower.add_to_chat(207, 'Failed init_self_magic - This is usually a typo in the set - Please review')
 							return
-						end
-		
+						end		
+						
 						log('Adding [' .. action.name .. ']')
-						log_d('id[' .. action.id .. '] buff_id[' .. action.buff_id .. '] when[' .. action.when	.. '] cmd[' .. action.cmd ..']')
+						log_d('id[' .. action.id .. '] buff_id[' .. action.buff_id .. '] when[' .. action.when	.. '] cmd[' .. action.cmd ..']')						
 		
 						ability_list:push_back(action)
 					elseif action.type == TYPE.SELF_JA or action.type == TYPE.SELF_DANCE then
 						if not action:init_self_ja(params) then
-							windower.add_to_chat(207, 'Failed init_self_ja')
+							windower.add_to_chat(207, 'Failed init_self_ja - This is usually a typo in the set - Please review')
 							return
 						end
 		
@@ -177,7 +177,7 @@ windower.register_event('addon command', function()
 						ability_list:push_back(action)
 					elseif action.type == TYPE.TARGET_JA or action.type == TYPE.TARGET_DANCE then
 						if not action:init_target_ja(params) then
-							windower.add_to_chat(207, 'Failed init_target_ja')
+							windower.add_to_chat(207, 'Failed init_target_ja - This is usually a typo in the set - Please review')
 							return
 						end
 		
@@ -187,7 +187,7 @@ windower.register_event('addon command', function()
 						ability_list:push_back(action)
 					elseif action.type == TYPE.CURE_DANCE then
 						if not action:init_cure_dance(params) then
-							windower.add_to_chat(207, 'Failed init_cure_dance')
+							windower.add_to_chat(207, 'Failed init_cure_dance - This is usually a typo in the set - Please review')
 							return
 						end
 		
@@ -198,7 +198,7 @@ windower.register_event('addon command', function()
 						ability_list:push_back(action)
 					elseif action.type == TYPE.CURE_MAGIC then
 						if not action:init_cure_magic(params) then
-							windower.add_to_chat(207, 'Failed init_cure_magic')
+							windower.add_to_chat(207, 'Failed init_cure_magic - This is usually a typo in the set - Please review')
 							return
 						end
 		
@@ -207,22 +207,23 @@ windower.register_event('addon command', function()
 		
 						ability_list:push_back(action)
 					else
-						windower.add_to_chat(207, 'Invalid action in set, please review')
+						windower.add_to_chat(207, 'Invalid action in set, please review. Action type was "' .. action.type .. '"')
 					end
 
 				end
-			--				settingsBuffsToUse = settings.buffs[jobKey]
-
-				update_gui(ability_list, zone_restriction_name)
+				
+				update_gui(ability_list, zone_restriction_name, pause)
 			else
 				windower.add_to_chat(207, 'No such set -> ' .. setName)
 			end
     	elseif command == COMMANDS.STOP then
     		log('Paused')
     		pause = true
+			update_gui(ability_list, zone_restriction_name, pause)
 		elseif command == COMMANDS.START then
     		log('Resuming')
 			pause = false
+			update_gui(ability_list, zone_restriction_name, pause)
 		elseif command == COMMANDS.ZONE then
 			local new_zone = tonumber(params[1])
 
@@ -239,7 +240,7 @@ windower.register_event('addon command', function()
 				log('Zone cleared')
 			end
 
-			update_gui(ability_list, zone_restriction_name)
+			update_gui(ability_list, zone_restriction_name, pause)
 		elseif command == COMMANDS.HELP then
 			log(get_help_string())
 		else
@@ -272,50 +273,36 @@ windower.register_event('time change', function(new, old)
 	end
 
 	if windower == nil or windower.ffxi == nil or windower.ffxi.get_player() == nil or windower.ffxi.get_info().logged_in == false then
+		-- Not logged in ffxi
 		return
 	end
 
-	if zone_restriction_id ~= nil and zone_restriction_id > 0 then
-		if windower.ffxi.get_info().zone ~= zone_restriction_id then return end
+	if zone_restriction_id ~= nil and zone_restriction_id > 0 and windower.ffxi.get_info().zone ~= zone_restriction_id then
+		-- Zone restriction is active and we're not in the specified zone
+		return
 	end
 
 	if windower.ffxi.get_player().autorun then
+		-- Don't do KU stuff when auto running as it's annoying
 		log_d('Auto-running, not performing actions')
 	end
 
-	local mobHP = 0
+	local mob = windower.ffxi.get_mob_by_target('t')
 
-	if engaged and windower.ffxi.get_mob_by_target('t') ~= nil then
-		mobHP = windower.ffxi.get_mob_by_target('t').hpp
-		log_d('Mob hpp = ' .. mobHP)
-	end
-
-	if mobHP == 100 then
+	if engaged and mob ~= nil and mob.hpp == 100 then
 		log_d('Mob hpp is 100, not starting yet')
 		return
 	end
 
-	-- KU is unpaused and we are either not engaged or engaged mob has < 100% hp
+	-- Checks passed
 	-- Look through every action in list to see if any are eligible for casting now
 	for i = 1, ability_list.count do
 		local action = ability_list.items[i]
 
-		if action ~= nil then
-			-- If combat status is appropriate for using this ability
-			if should_recast(action, engaged) then
-				-- If it has no buff or it does but the buff has worn off
-				if action.buff_id == nil or is_buff_on(action) == false then
-					-- If recast timer is zero
-					if can_recast(action) then
-						-- If have anough MP for this spell, or it's a JA
-						if enough_mp(action) then
-							-- Do action
-							windower.send_command(action.cmd)
-							return
-						end
-					end
-				end
-			end
+		if action ~= nil and should_recast(action, engaged) and (action.buff_id == nil or is_buff_on(action) == false) and can_recast(action) and enough_mp(action) then
+			-- Do action
+			windower.send_command(action.cmd)
+			return
 		end
 	end
 end)
