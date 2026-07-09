@@ -1,4 +1,5 @@
 --[[VERSION HISTORY
+1.3.1 - HUD builds on load and stays visible with an empty list (Slate taskbar)
 1.3 - Added support for sets
 1.2 - Added zone exclusions & fixed curema
 1.12 - Added cureda and curema
@@ -7,7 +8,7 @@
 1.00 - Inital with selfja/selfma/targma/targja]]
 
 _addon.name = 'ku'
-_addon.version = '1.3'
+_addon.version = '1.3.1'
 _addon.author = 'Jintawk/Jinvoco (Carbuncle)'
 _addon.command = 'ku'
 
@@ -30,8 +31,10 @@ zone_restriction_name = nil
 --[[
 	Event: Addon command received from player
 ]]
-windower.register_event('addon command', function()
-    return function(command, ...)
+windower.register_event('addon command', function(command, ...)
+    	if slate.handle_command(command, ...) then
+    		return
+    	end
     	command = string.lower(command)
     	local params = {...}
 
@@ -241,13 +244,30 @@ windower.register_event('addon command', function()
 			end
 
 			update_gui(ability_list, zone_restriction_name, pause)
+		elseif command == 'scale' then
+			local n = tonumber(params[1])
+			if n and n >= 0.5 and n <= 3 then
+				settings.ui.scale = n
+				config.save(settings)
+				slate.set_scale(n)
+				update_gui(ability_list, zone_restriction_name, pause)
+				log('HUD scale set to ' .. n)
+			else
+				log('Usage: //ku scale <0.5-3>')
+			end
 		elseif command == COMMANDS.HELP then
 			log(get_help_string())
 		else
 			log_invalid_params()
 		end
-    end
-end())
+end)
+
+--[[
+	Event: Addon loaded - show the HUD straight away (empty list included)
+]]
+windower.register_event('load', function()
+	update_gui(ability_list, zone_restriction_name, pause)
+end)
 
 --[[
 	Event: Status has changed Engaged/Not Enaged

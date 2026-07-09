@@ -36,11 +36,13 @@
 //ku add selfma Phalanx 106 116 in
 //ku add selfma Refresh 109 43 in
 //ku add selfma Refresh_II 473 43 in
+//ku add selfma Refresh_III 894 43 in
 //ku add selfma Regen 108 42 in
 //ku add selfma Regen_II 110 42 in
 //ku add selfma Temper 493 432 in
 //ku add selfma Temper_II 895 432 in
 //ku add selfma Ice_Spikes 250 35 in
+//ku add selfma Shock_Spikes 251 38 in
 //ku add selfma Gain-STR 486 119 in
 //ku add selfma Gain-INT 490 123 in
 //ku add selfma Gain-DEX 487 120 in
@@ -98,12 +100,16 @@
 //ku add selfma Aurorastorm 119 184 in
 
 -- BLU
+//ku add selfma Occultation 679 36 in
 //ku add selfma Cocoon 547 93 in
 //ku add curema Magic_Fruit 593 all 75
 //ku add selfma Erratic_Flutter 710 33 in
 //ku add selfma Battery_Charge 662 43 in
 //ku add targma Sheep_Song 584
 //ku add targma Geist_Wall 605
+//ku add selfma Magic_Barrier 668 152 in
+//ku add selfma Regeneration 664 42 in
+//ku add selfma Barrier_Tusk 685 116 in
 
 -- MNK
 //ku add targja Provoke 35 5
@@ -127,6 +133,8 @@
 //ku add selfja Aggressor 34 58 4 in
 //ku add targja Provoke 35 5
 
+-- SAM
+//ku add selfja Hasso 173 353 138 in
 
 // NIN
 //ku add selfja Innin 249 421 147 in
