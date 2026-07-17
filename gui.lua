@@ -1,12 +1,13 @@
 require "List"
 require "const"
 config = require('config')
--- shared Slate UI lib when present; the bundled copy makes a standalone clone work
-local slate_ok
-slate_ok, slate = pcall(require, 'slate')
-if not slate_ok then
-	slate = require('slate_bundled')
+-- shared mythril UI lib when present; the bundled copy makes a standalone clone work
+local mythril_ok
+mythril_ok, mythril = pcall(require, 'mythril')
+if not mythril_ok then
+	mythril = require('mythril_bundled')
 end
+mythril.set_assets_path(windower.addon_path .. 'assets/')
 
 defaults = {
 	pos = {
@@ -37,22 +38,16 @@ local function build_ui()
 		return
 	end
 	ui.built = true
-	slate.set_scale(tonumber(settings.ui.scale) or 1)
+	mythril.set_scale(tonumber(settings.ui.scale) or 1)
 
-	ui.panel = slate.Panel({
+	ui.panel = mythril.Panel({
 		x = settings.pos.x,
 		y = settings.pos.y,
+		pos_source = function() return settings.pos.x, settings.pos.y end,
 		w = UI_W,
 		content_h = 40,
-		title = 'KU',
-		master = true,
-		master_on = not pause,
+		title = 'Ku',
 		minimized = settings.ui.minimized,
-		on_master = function()
-			pause = not pause
-			log(pause and 'Paused' or 'Resuming')
-			update_gui(ability_list, zone_restriction_name, pause)
-		end,
 		on_move = function(x, y)
 			settings.pos.x = x
 			settings.pos.y = y
@@ -65,19 +60,27 @@ local function build_ui()
 		end,
 	})
 
-	ui.footer = slate.Label({size = 9, font = slate.font.mono, color = slate.color.ok})
+	ui.footer = mythril.Label({size = 9, font = mythril.font.mono, color = mythril.color.ok})
 	ui.panel:add(ui.footer, 10, 0)
 
-	ui.hint = slate.Label({size = 10, color = slate.color.text_faint, text = 'no actions - //ku help'})
+	-- master switch is gone in mythril; clicking the footer line toggles pause
+	ui.master_hit = mythril.HitBox({w = UI_W, h = FOOTER_H, on_click = function()
+		pause = not pause
+		log(pause and 'Paused' or 'Resuming')
+		update_gui(ability_list, zone_restriction_name, pause)
+	end})
+	ui.panel:add(ui.master_hit, 0, 0)
+
+	ui.hint = mythril.Label({size = 10, color = mythril.color.text_faint, text = 'no actions - //ku help'})
 	ui.panel:add(ui.hint, 10, 4)
 end
 
 local function ensure_rows(n)
 	for i = #ui.rows + 1, n do
 		local row = {
-			idx  = slate.Label({size = 9, font = slate.font.mono, color = slate.color.text_faint}),
-			name = slate.Label({size = 10, color = slate.color.text}),
-			tag  = slate.Label({size = 9, font = slate.font.mono, color = slate.color.text_faint}),
+			idx  = mythril.Label({size = 9, font = mythril.font.mono, color = mythril.color.text_faint}),
+			name = mythril.Label({size = 10, color = mythril.color.text}),
+			tag  = mythril.Label({size = 9, font = mythril.font.mono, color = mythril.color.text_faint}),
 		}
 		local ry = 4 + (i - 1) * ROW_H
 		ui.panel:add(row.idx, 10, ry + 1)
@@ -111,7 +114,7 @@ function update_gui(list, zone, pause)
 				ui.panel:place(row.tag, 150, ry + 1)
 				row.idx:text(tostring(i))
 				row.name:text(item.name)
-				row.name:color(pause and slate.color.disabled or slate.color.text)
+				row.name:color(pause and mythril.color.disabled or mythril.color.text)
 				row.tag:text('(' .. item.type .. '-' .. (item.when or '') .. ')')
 			end
 		end
@@ -122,10 +125,11 @@ function update_gui(list, zone, pause)
 		state = state .. '  zone: ' .. zone
 	end
 	ui.footer:text(state)
-	ui.footer:color(pause and slate.color.warn or slate.color.ok)
+	ui.footer:color(pause and mythril.color.warn or mythril.color.ok)
 	ui.panel:place(ui.footer, 10, 4 + rows_h + 4)
+	ui.panel:place(ui.master_hit, 0, 4 + rows_h + 4)
 
-	ui.panel:set_master(not pause)
+	ui.panel:title_dim(pause)
 	if not ui.panel:visible() then
 		ui.panel:show()
 	end
@@ -133,6 +137,7 @@ function update_gui(list, zone, pause)
 	-- hide pooled rows beyond the current count; leave everything hidden
 	-- while the panel is minimized (the panel manages its own children)
 	if not ui.panel:is_minimized() then
+		ui.master_hit:visible(true)
 		ui.hint:visible(n == 0)
 		for i = 1, #ui.rows do
 			local v = i <= slot
