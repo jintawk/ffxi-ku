@@ -47,7 +47,7 @@ local texts = require('texts')
 local images = require('images')
 
 local mythril = {}
-mythril.version = '0.5.0'
+mythril.version = '0.5.2'
 
 -- ========================================================================
 -- Theme: palette sampled from the game's own windows (4K screenshots)
@@ -449,6 +449,10 @@ function mythril.HitBox(opts)
     self.on_hover = opts.on_hover
     self.on_scroll = opts.on_scroll
     self.on_rclick = opts.on_rclick
+    -- a HitBox is a background catch-all (e.g. a whole-row click target); when
+    -- it overlaps a foreground control (Button/IconButton) the control wins the
+    -- click. See the mouse-down handler's two-pass arming.
+    self._is_catchall = true
     register(self)
     interactive[self._id] = self
     return self
@@ -503,6 +507,8 @@ end
 --            text yellow, :color() sets the resting color, and the hit test is
 --            content-sized. This is slate.Button's look, so a slate addon ports
 --            its text buttons with s/slate/mythril/ plus plain = true.
+-- opts.font picks the label face (default Arial); pass mythril.font.mono for
+-- space-padded columns that must line up (dense data rows).
 -- Text goes yellow on hover, its normal color otherwise, dim when disabled.
 -- ========================================================================
 
@@ -534,7 +540,7 @@ function mythril.Button(opts)
     local bold = self._plain and (opts.bold ~= false) or true
     self._label = mythril.Label({
         text = self._label_text, size = self._base_size,
-        bold = bold, color = self._col_normal,
+        bold = bold, color = self._col_normal, font = opts.font,
     })
     register(self)
     interactive[self._id] = self
@@ -554,18 +560,24 @@ function Button:_recolor()
     end
 end
 
--- center the label in the pill (extents fallback until first render); no-op
--- for a plain button, whose label sits at the button's own position
+-- center the label in the pill; no-op for a plain button, whose label sits at
+-- the button's own position. Uses the text plugin's real extents (width AND
+-- height) for accurate vertical centering, and caches the resulting offset so a
+-- frame where extents momentarily read 0 - right after a hide/show while a list
+-- scrolls - reuses the last good offset instead of snapping to the width
+-- estimate (which was the "ON/OFF text jumps around" glitch).
 function Button:_center_label()
     if not self._pill then return end
-    local tw = self._label:extents()
-    if not tw or tw <= 0 then
-        tw = estimate_width(self._label_text, S(self._base_size))
+    local tw, th = self._label:extents()
+    if tw and tw > 0 then
+        self._lbl_dx = math.floor((S(self._w) - tw) / 2)
+        self._lbl_dy = math.floor((S(self._h) - (th or S(self._base_size))) / 2)
+    elseif not self._lbl_dx then
+        local ew = estimate_width(self._label_text, S(self._base_size))
+        self._lbl_dx = math.floor((S(self._w) - ew) / 2)
+        self._lbl_dy = math.floor((S(self._h) - (S(self._base_size) + S(3))) / 2)
     end
-    local th = S(self._base_size) + S(3)
-    local lx = self._x + math.floor((S(self._w) - tw) / 2)
-    local ly = self._y + math.floor((S(self._h) - th) / 2)
-    self._label:pos(lx, ly)
+    self._label:pos(self._x + self._lbl_dx, self._y + self._lbl_dy)
 end
 
 function Button:pos(x, y)
@@ -1316,9 +1328,11 @@ end
 -- Mouse dispatch - one handler per addon
 -- ========================================================================
 
-local drag_state = nil          -- {window, dx, dy}
-local mouse_down_target = nil
+local drag_state = nil          -- {window, dx, dy} once a drag is live
+local mouse_down_target = nil   -- a clickable widget armed on mouse-down
+local pending_drag = nil        -- {window, dx, dy, ox, oy} a press that may become a drag
 local mouse_x, mouse_y = -10000, -10000
+local DRAG_THRESHOLD = 5        -- px of travel before a press turns into a drag
 
 function mythril.mouse_pos()
     return mouse_x, mouse_y
@@ -1335,15 +1349,31 @@ end
 
 windower.register_event('mouse', function(m_type, x, y, delta, blocked)
     mouse_x, mouse_y = x, y
-    if blocked and not drag_state and not mouse_down_target then
+    if blocked and not drag_state and not mouse_down_target and not pending_drag then
         return
     end
 
-    -- move: drag or hover. Never consume plain moves - swallowing type-0
-    -- events freezes FFXI's cursor tracking.
+    -- move: drag, promote a press to a drag, or hover. Never consume plain
+    -- moves - swallowing type-0 events freezes FFXI's cursor tracking.
     if m_type == 0 then
         if drag_state then
             drag_state.window:pos(x - drag_state.dx, y - drag_state.dy)
+            return true
+        end
+        if pending_drag then
+            local mx, my = x - pending_drag.ox, y - pending_drag.oy
+            if mx * mx + my * my >= DRAG_THRESHOLD * DRAG_THRESHOLD then
+                -- travel crossed the threshold: this press is a window drag,
+                -- not a click. Disarm the widget and start moving.
+                if mouse_down_target and mouse_down_target.set_hovered then
+                    mouse_down_target:set_hovered(false)
+                end
+                mouse_down_target = nil
+                drag_state = {window = pending_drag.window,
+                    dx = pending_drag.dx, dy = pending_drag.dy}
+                pending_drag = nil
+                drag_state.window:pos(x - drag_state.dx, y - drag_state.dy)
+            end
             return true
         end
         for _, w in pairs(interactive) do
@@ -1354,33 +1384,51 @@ windower.register_event('mouse', function(m_type, x, y, delta, blocked)
         return false
     end
 
-    -- left down: arm a widget, else start a window drag from anywhere on it
+    -- left down: record a potential drag from the window under the cursor
+    -- (so a press-and-drag anywhere on the body moves it), and separately arm
+    -- any clickable widget there. A release without travel fires the click; a
+    -- release after travel drags. Widget-free presses drag once travel begins.
     if m_type == 1 then
+        for _, p in pairs(all_windows) do
+            if p:hover(x, y) then
+                pending_drag = {window = p, dx = x - p._x, dy = y - p._y, ox = x, oy = y}
+                break
+            end
+        end
+        -- arm the clickable under the cursor, foreground controls first so a
+        -- specific Button (e.g. fisher's KEEP/C&R toggle) beats the whole-row
+        -- HitBox it sits on instead of the two racing in hash order.
         for _, w in pairs(interactive) do
-            if w.on_click and w:hover(x, y) then
+            if w.on_click and not w._is_catchall and w:hover(x, y) then
                 mouse_down_target = w
                 return true
             end
         end
-        for _, p in pairs(all_windows) do
-            if p:hover(x, y) then
-                drag_state = {window = p, dx = x - p._x, dy = y - p._y}
+        for _, w in pairs(interactive) do
+            if w.on_click and w._is_catchall and w:hover(x, y) then
+                mouse_down_target = w
                 return true
             end
+        end
+        if pending_drag then
+            return true
         end
         return
     end
 
-    -- left up: finish drag, or fire the armed widget
+    -- left up: finish a drag, or fire the armed widget as a click
     if m_type == 2 then
         if drag_state then
             local p = drag_state.window
             drag_state = nil
+            pending_drag = nil
+            mouse_down_target = nil
             if p.on_move then
                 p.on_move(p._x, p._y)
             end
             return true
         end
+        pending_drag = nil
         if mouse_down_target then
             local w = mouse_down_target
             mouse_down_target = nil

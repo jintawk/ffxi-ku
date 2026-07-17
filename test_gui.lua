@@ -1,8 +1,7 @@
 -- Offline smoke test for ku's mythril port (gui.lua): drives update_gui across
--- states and clicks the footer (the mythril replacement for slate's title-bar
--- master switch) through the real mythril mouse handler to confirm pause
--- toggles and the title dims. Stubs windower/texts/images/config + List/const.
--- Run with local Lua 5.1.
+-- states and clicks the top "Keeping up" master row through the real mythril
+-- mouse handler to confirm pause toggles and the title dims. Stubs
+-- windower/texts/images/config + List/const. Run with local Lua 5.1.
 
 _addon = {name = 'ku'}
 coroutine.schedule = function() end
@@ -71,17 +70,18 @@ check(type(update_gui) == 'function', 'update_gui defined')
 update_gui(ability_list, zone_restriction_name, pause)
 check(events['mouse'] ~= nil, 'mythril mouse handler registered')
 
--- footer HitBox is placed full-width at content y = 4 + rows_h + 4 (rows_h =
--- 2*18). Panel origin is settings.pos (300,475), title inset 14. Click there.
-local fx, fy = 300 + 20, 475 + 14 + (4 + 2 * 18 + 4) + 4
-check(events['mouse'](1, fx, fy, 0, false) == true, 'footer click armed over the master hit')
-events['mouse'](2, fx, fy, 0, false)
-check(pause == true, 'clicking the footer toggled pause on')
+-- master "Keeping up" HitBox is full-width at the top (content y = MASTER_Y..
+-- +MASTER_H = 4..24). Panel origin is settings.pos (300,475), title inset 14.
+-- Click into that row.
+local mx, my = 300 + 20, 475 + 14 + 4 + 8
+check(events['mouse'](1, mx, my, 0, false) == true, 'master-row click armed over the master hit')
+events['mouse'](2, mx, my, 0, false)
+check(pause == true, 'clicking the master row toggled pause on')
 
 -- click again to resume
-events['mouse'](1, fx, fy, 0, false)
-events['mouse'](2, fx, fy, 0, false)
-check(pause == false, 'clicking the footer again resumed')
+events['mouse'](1, mx, my, 0, false)
+events['mouse'](2, mx, my, 0, false)
+check(pause == false, 'clicking the master row again resumed')
 
 -- empty list still renders (hint line where rows would be)
 update_gui(make_list(0), nil, pause)
