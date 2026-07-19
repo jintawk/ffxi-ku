@@ -91,9 +91,12 @@
     </global>
     <jintawk>
         <pos>
-            <x>684</x>
-            <y>1083</y>
+            <x>3147</x>
+            <y>25</y>
         </pos>
+        <ui>
+            <minimized>true</minimized>
+        </ui>
     </jintawk>
     <jyntawk>
         <pos>
@@ -115,8 +118,8 @@
     </jynvoco>
     <liweili>
         <pos>
-            <x>1744</x>
-            <y>1886</y>
+            <x>1840</x>
+            <y>1887</y>
         </pos>
         <ui>
             <minimized>true</minimized>
